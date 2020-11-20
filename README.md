@@ -7,4 +7,4 @@
 - ⚡ Fun fact: I :heart: :dog:s
 
 📊 **This week I spent my time on**
-
+![Anurag's github stats](https://github-readme-stats.vercel.app/api?username=cuongvanledev&count_private=true)
