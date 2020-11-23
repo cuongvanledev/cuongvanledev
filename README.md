@@ -1,4 +1,4 @@
-### Hi there  <p> :rofl: </p>
+### Hi there  :rofl:
 
 - 🔭 I’m currently working on deverloper :wink:
 - 🌱 I’m currently learning Flutter, Python and C Sharp
