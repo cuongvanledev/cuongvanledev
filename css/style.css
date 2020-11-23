@@ -7,7 +7,17 @@
 }
 
 /* ---- stats.js ---- */
-
+/* User image */
+.userImage{
+    float: left;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    position: relative;
+    -webkit-animation: fadeInDown 500ms ease-in-out; /* Chrome, Safari, Opera */
+      animation: fadeInDown 500ms ease-in-out;
+  }
 .count-particles{
   background: #000022;
   position: absolute;
