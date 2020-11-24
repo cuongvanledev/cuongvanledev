@@ -5,7 +5,7 @@
 - 💬 Ask me about anything related to C/C++/Python
 - ⚡ Fun fact: I :heart: :dog:s
 
- <a><hr  width="30%" size="5px" align="center" color="red" /><a>
+================
 
 ## Find me around the web 🌎: <a href="https://github.com/sponsors/cuongvanledev"><img align="left" width="150" height="150" src="https://github.com/cuongvanledev/cuongvanledev/blob/main/image/source.gif?raw=true"></a>
 - Learning in public on <a href="https://www.twitch.tv/blacktechdiva">Blog</a> 📹 ✍🏾
