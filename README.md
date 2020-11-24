@@ -1,6 +1,6 @@
 ### Hi there  :rofl:
 
-- 🔭 I’m currently working on deverloper :wink:
+- 🔭 I’m currently working on developer :wink:
 - 🌱 I’m currently learning Flutter, Python and C Sharp
 - 💬 Ask me about anything related to C/C++/Python
 - ⚡ Fun fact: I :heart: :dog:s
