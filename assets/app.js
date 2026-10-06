@@ -346,33 +346,15 @@ function createChapterHtml(chapter) {
 
     let lines = [];
 
+    if (Array.isArray(chapter.content)) {
 
-    /*
-     * content là array
-     */
+        lines = chapter.content;
 
-    if (
-        Array.isArray(
-            chapter.content
-        )
-    ) {
+    } else {
 
-        lines =
-            chapter.content;
-
-    }
-
-    /*
-     * content là string
-     */
-
-    else {
-
-        lines =
-            String(
-                chapter.content || ""
-            )
-            .split(/\r?\n/);
+        lines = String(
+            chapter.content || ""
+        ).split(/\r?\n/);
 
     }
 
@@ -380,26 +362,15 @@ function createChapterHtml(chapter) {
     let contentHtml = "";
 
 
-    for (
-        const line of lines
-    ) {
+    for (const line of lines) {
 
-        const text =
-            String(
-                line == null ? "" : line
-            );
+        const text = String(
+            line == null ? "" : line
+        );
 
 
-        /*
-         * Bỏ dòng trống
-         */
-
-        if (
-            text.trim() === ""
-        ) {
-
+        if (text.trim() === "") {
             continue;
-
         }
 
 
@@ -407,13 +378,8 @@ function createChapterHtml(chapter) {
             "<p>" +
             escapeHtml(text) +
             "</p>";
-
     }
 
-
-    /*
-     * Tiêu đề
-     */
 
     const title =
         chapter.title ||
@@ -426,30 +392,6 @@ function createChapterHtml(chapter) {
         );
 
 
-    /*
-     * Ngày
-     */
-
-    const createdAt =
-        chapter.createdAt || "";
-
-
-    /*
-     * ID chapter
-     */
-
-    const chapterId =
-        chapter.id || "";
-
-
-    /*
-     * Số chapter
-     */
-
-    const chapterNumber =
-        chapter.chapterNumber || "";
-
-
     return (
         '<article class="chapter">' +
 
@@ -459,38 +401,6 @@ function createChapterHtml(chapter) {
 
             "</h2>" +
 
-
-            '<div class="chapter-date">' +
-
-                "Chương " +
-
-                escapeHtml(
-                    chapterNumber
-                ) +
-
-                (
-                    createdAt
-                        ? " · " +
-                          escapeHtml(
-                              createdAt
-                          )
-                        : ""
-                ) +
-
-            "</div>" +
-
-
-            (
-                chapterId
-                    ? '<div class="chapter-id">' +
-                      escapeHtml(
-                          chapterId
-                      ) +
-                      "</div>"
-                    : ""
-            ) +
-
-
             '<div class="chapter-content">' +
 
                 contentHtml +
@@ -499,7 +409,6 @@ function createChapterHtml(chapter) {
 
         "</article>"
     );
-
 }
 
 
