@@ -1,0 +1,30 @@
+{
+    "chapters": [
+        {
+            "id": "chap-3337907",
+            "mangaId": "truyen-3268",
+            "chapterNumber": 3337907,
+            "title": "📚  Chương 200: Tốt Nhất Cẩu Vị?",
+            "createdAt": "2026-10-06",
+            "nextChapter": 3337908,
+            "prevChapter": 3337906,
+            "content": [
+                "Đây là nội dung mẫu của chương 200.",
+                "Bạn có thể thay bằng nội dung thật.",
+                "Mỗi phần tử trong content là một đoạn văn."
+            ]
+        },
+        {
+            "id": "chap-3337908",
+            "mangaId": "truyen-3268",
+            "chapterNumber": 3337908,
+            "title": "📚  Chương 201",
+            "createdAt": "2026-10-06",
+            "nextChapter": 3337909,
+            "prevChapter": 3337907,
+            "content": [
+                "Đây là nội dung mẫu của chương 201."
+            ]
+        }
+    ]
+}

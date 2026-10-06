@@ -1,51 +1,136 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Đọc Truyện</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Đọc Truyện</title>
+
+    <link
+        rel="stylesheet"
+        href="./assets/style.css"
+    >
 </head>
+
 <body>
-  <header>
-    <h1>Web Đọc Truyện</h1>
-  </header>
 
-  <main class="container">
-    <!-- View 1: Danh sách Chapter -->
-    <section id="chapter-list-view">
-      <h2>Danh sách chương</h2>
-      <ul id="chapter-list"></ul>
-      
-      <!-- Phân trang (10 chap / page) -->
-      <div class="pagination">
-        <button id="btn-prev-page">Trang trước</button>
-        <span id="page-info">Trang 1</span>
-        <button id="btn-next-page">Trang sau</button>
-      </div>
+<header class="site-header">
+
+    <div class="header-inner">
+
+        <a
+            href="./"
+            class="logo"
+        >
+            📚 Đọc Truyện
+        </a>
+
+        <div
+            id="storyInfo"
+            class="story-info"
+        >
+            Đang tải...
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="reader">
+
+    <!-- PAGINATION TOP -->
+
+    <nav class="pagination">
+
+        <button
+            id="prevButton"
+            type="button"
+        >
+            ← Trang trước
+        </button>
+
+        <span id="pageInfo">
+            Trang 1 / 1
+        </span>
+
+        <button
+            id="nextButton"
+            type="button"
+        >
+            Trang sau →
+        </button>
+
+    </nav>
+
+
+    <!-- LOADING -->
+
+    <div
+        id="loading"
+        class="loading"
+    >
+        Đang tải chương...
+    </div>
+
+
+    <!-- ERROR -->
+
+    <div
+        id="error"
+        class="error hidden"
+    >
+    </div>
+
+
+    <!-- CHAPTERS -->
+
+    <section id="chapters">
     </section>
 
-    <!-- View 2: Nội dung Chapter -->
-    <section id="reader-view" class="hidden">
-      <button id="btn-back" class="btn-secondary">&larr; Về danh sách</button>
-      
-      <div class="reader-nav">
-        <button id="btn-prev-chap">&larr; Chap trước</button>
-        <button id="btn-next-chap">Chap sau &rarr;</button>
-      </div>
 
-      <h2 id="chap-title"></h2>
-      <p class="chap-date" id="chap-date"></p>
+    <!-- PAGINATION BOTTOM -->
 
-      <div id="chap-content" class="content-box"></div>
+    <nav class="pagination">
 
-      <div class="reader-nav">
-        <button id="btn-prev-chap-bottom">&larr; Chap trước</button>
-        <button id="btn-next-chap-bottom">Chap sau &rarr;</button>
-      </div>
-    </section>
-  </main>
+        <button
+            id="prevButtonBottom"
+            type="button"
+        >
+            ← Trang trước
+        </button>
 
-  <script src="app.js"></script>
+        <span id="pageInfoBottom">
+            Trang 1 / 1
+        </span>
+
+        <button
+            id="nextButtonBottom"
+            type="button"
+        >
+            Trang sau →
+        </button>
+
+    </nav>
+
+</main>
+
+
+<footer>
+
+    © <span id="year"></span>
+    Cuong Van Le Dev
+
+</footer>
+
+
+<script src="./assets/app.js"></script>
+
 </body>
+
 </html>

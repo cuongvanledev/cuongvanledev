@@ -1,0 +1,355 @@
+* {
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    margin: 0;
+
+    background: #f4f4f5;
+
+    color: #27272a;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    line-height: 1.8;
+}
+
+
+/* ==============================
+   HEADER
+============================== */
+
+.site-header {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    border-bottom: 1px solid #ddd;
+
+    backdrop-filter: blur(8px);
+}
+
+
+.header-inner {
+    max-width: 900px;
+
+    min-height: 60px;
+
+    margin: auto;
+
+    padding: 0 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+.logo {
+    color: #222;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    font-size: 18px;
+}
+
+
+.story-info {
+    color: #777;
+
+    font-size: 13px;
+}
+
+
+/* ==============================
+   READER
+============================== */
+
+.reader {
+    max-width: 900px;
+
+    margin: 25px auto;
+
+    padding: 0 12px;
+}
+
+
+/* ==============================
+   PAGINATION
+============================== */
+
+.pagination {
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    padding: 10px;
+
+    margin-bottom: 15px;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        auto
+        1fr;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.pagination button {
+    background: white;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    padding: 9px 14px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+
+.pagination button:hover:not(:disabled) {
+    background: #f4f4f5;
+}
+
+
+.pagination button:disabled {
+    opacity: 0.4;
+
+    cursor: not-allowed;
+}
+
+
+.pagination button:first-child {
+    justify-self: start;
+}
+
+
+.pagination button:last-child {
+    justify-self: end;
+}
+
+
+#pageInfo,
+#pageInfoBottom {
+    font-weight: bold;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+/* ==============================
+   CHAPTER
+============================== */
+
+.chapter {
+    background: white;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    padding: 35px 40px;
+
+    margin-bottom: 18px;
+}
+
+
+.chapter-title {
+    margin: 0 0 8px;
+
+    text-align: center;
+
+    font-size: 24px;
+
+    line-height: 1.4;
+}
+
+
+.chapter-date {
+    margin-bottom: 28px;
+
+    text-align: center;
+
+    color: #999;
+
+    font-size: 13px;
+}
+
+
+.chapter-content {
+    font-size: 18px;
+
+    line-height: 1.9;
+}
+
+
+.chapter-content p {
+    margin: 0 0 18px;
+
+    text-indent: 2em;
+
+    word-break: break-word;
+}
+
+
+/* ==============================
+   LOADING
+============================== */
+
+.loading {
+    padding: 50px;
+
+    text-align: center;
+
+    color: #777;
+}
+
+
+/* ==============================
+   ERROR
+============================== */
+
+.error {
+    padding: 25px;
+
+    margin-bottom: 20px;
+
+    background: white;
+
+    color: #b91c1c;
+
+    border: 1px solid #fca5a5;
+
+    border-radius: 10px;
+
+    text-align: center;
+}
+
+
+.hidden {
+    display: none;
+}
+
+
+/* ==============================
+   FOOTER
+============================== */
+
+footer {
+    padding: 30px;
+
+    color: #999;
+
+    font-size: 13px;
+
+    text-align: center;
+}
+
+
+/* ==============================
+   MOBILE
+============================== */
+
+@media (max-width: 650px) {
+
+    .header-inner {
+        min-height: 55px;
+    }
+
+
+    .story-info {
+        display: none;
+    }
+
+
+    .reader {
+        margin: 12px auto;
+
+        padding: 0 7px;
+    }
+
+
+    .pagination {
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+
+
+    #pageInfo,
+    #pageInfoBottom {
+        grid-column: 1 / -1;
+
+        grid-row: 1;
+
+        order: -1;
+    }
+
+
+    .pagination button:first-child {
+        grid-column: 1;
+
+        grid-row: 2;
+    }
+
+
+    .pagination button:last-child {
+        grid-column: 2;
+
+        grid-row: 2;
+    }
+
+
+    .chapter {
+        padding: 25px 18px;
+
+        border-radius: 8px;
+    }
+
+
+    .chapter-title {
+        font-size: 20px;
+    }
+
+
+    .chapter-content {
+        font-size: 17px;
+
+        line-height: 1.85;
+    }
+
+
+    .chapter-content p {
+        margin-bottom: 16px;
+    }
+
+}
