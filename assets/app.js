@@ -1,627 +1,405 @@
-const INDEX_URL = "./data/index.json";
-
+// CẤU HÌNH SỐ CHƯƠNG TRÊN MỖI TRANG ĐỌC
 const CHAPTERS_PER_PAGE = 10;
 
+// TRẠNG THÁI ỨNG DỤNG
+let storiesData = [];
+let currentStory = null;
+let currentPageIndex = 1;
+let currentReaderFontSize = 18;
 
-let chapterFiles = [];
+// DOM Elements
+const viewHome = document.getElementById('viewHome');
+const viewDetail = document.getElementById('viewDetail');
+const viewReader = document.getElementById('viewReader');
 
-let currentPage = 1;
+const storyGrid = document.getElementById('storyGrid');
+const searchInput = document.getElementById('searchInput');
+const genreContainer = document.getElementById('genreContainer');
+const storyDetailContent = document.getElementById('storyDetailContent');
 
-let totalPages = 1;
+const chaptersContainer = document.getElementById('chapters');
+const storyInfo = document.getElementById('storyInfo');
+const loadingEl = document.getElementById('loading');
+const errorEl = document.getElementById('error');
 
+const prevButton = document.getElementById('prevButton');
+const nextButton = document.getElementById('nextButton');
+const prevButtonBottom = document.getElementById('prevButtonBottom');
+const nextButtonBottom = document.getElementById('nextButtonBottom');
+const chapterSelect = document.getElementById('chapterSelect');
 
-/* =====================================
-   HELPER
-===================================== */
-
-function $(id) {
-    return document.getElementById(id);
+// HELPER: LẤY SỐ CHƯƠNG BẮT ĐẦU (MẶC ĐỊNH LÀ 1 NẾU KHÔNG KHAI BÁO FIRST_CHAP)
+function getFirstChapNum(story) {
+    if (!story || story.first_chap === undefined || story.first_chap === null) {
+        return 1;
+    }
+    const parsed = parseInt(story.first_chap, 10);
+    return isNaN(parsed) ? 1 : parsed;
 }
 
+// KHỞI TẠO ỨNG DỤNG
+document.addEventListener('DOMContentLoaded', async () => {
+    document.getElementById('year').textContent = new Date().getFullYear();
+    setupEventListeners();
+    await loadStories();
+    handleRouting();
+});
 
-/* =====================================
-   ESCAPE HTML
-===================================== */
+// ROUTING HASH (#home, #story/truyen_1, #read/truyen_1/page/1)
+window.addEventListener('hashchange', handleRouting);
 
-function escapeHtml(value) {
+function handleRouting() {
+    const hash = window.location.hash.replace('#', '') || 'home';
+    const parts = hash.split('/');
 
-    return String(
-        value == null ? "" : value
-    )
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    viewHome.classList.add('hidden');
+    viewDetail.classList.add('hidden');
+    viewReader.classList.add('hidden');
+
+    if (parts[0] === 'home' || parts[0] === '') {
+        viewHome.classList.remove('hidden');
+        document.title = "Trang Chủ - Đọc Truyện Online";
+    } 
+    else if (parts[0] === 'story' && parts[1]) {
+        showStoryDetail(parts[1]);
+    } 
+    else if (parts[0] === 'read' && parts[1]) {
+        const storyId = parts[1];
+        if (parts[2] === 'page' && parts[3]) {
+            showReader(storyId, parseInt(parts[3], 10));
+        } else if (parts[2]) {
+            const story = storiesData.find(s => s.id === storyId);
+            if (story && story.chapters) {
+                const chapIdx = story.chapters.indexOf(parts[2]);
+                const pageNum = chapIdx !== -1 ? Math.floor(chapIdx / CHAPTERS_PER_PAGE) + 1 : 1;
+                showReader(storyId, pageNum, parts[2]);
+            }
+        }
+    }
 }
 
+// 1. TẢI DANH SÁCH TRUYỆN
+async function loadStories() {
+    try {
+        const response = await fetch('./data/stories.json');
+        if (!response.ok) throw new Error('Không thể tải file stories.json');
+        storiesData = await response.json();
+        
+        renderGenres();
+        renderStoryGrid(storiesData);
+    } catch (err) {
+        console.error(err);
+        storyGrid.innerHTML = `<p style="color: red;">Không tìm thấy file data/stories.json.</p>`;
+    }
+}
 
-/* =====================================
-   GET PAGE FROM URL
-===================================== */
-
-function getPageFromUrl() {
-
-    const params =
-        new URLSearchParams(
-            window.location.search
-        );
-
-    const value =
-        Number(
-            params.get("page")
-        );
-
-    if (
-        Number.isInteger(value) &&
-        value > 0
-    ) {
-        return value;
+function renderStoryGrid(stories) {
+    storyGrid.innerHTML = '';
+    
+    if (stories.length === 0) {
+        storyGrid.innerHTML = '<p>Không tìm thấy truyện nào phù hợp.</p>';
+        return;
     }
 
-    return 1;
+    stories.forEach(story => {
+        const card = document.createElement('div');
+        card.className = 'story-card';
+        card.onclick = () => window.location.hash = `story/${story.id}`;
+
+        const genresTags = Array.isArray(story.genres) 
+            ? story.genres.map(g => `<span class="tag">${g}</span>`).join(' ') 
+            : '';
+
+        card.innerHTML = `
+            <img src="${story.cover}" alt="${story.title}" loading="lazy">
+            <div class="story-card-body">
+                <div class="story-card-title">${story.title}</div>
+                <div style="margin-bottom: 8px;">${genresTags}</div>
+                <div class="story-card-meta">
+                    <span>${story.chapters ? story.chapters.length : 0} chương</span> • <span>${story.status}</span>
+                </div>
+            </div>
+        `;
+        storyGrid.appendChild(card);
+    });
 }
 
-
-/* =====================================
-   LOAD INDEX
-===================================== */
-
-async function loadIndex() {
-
-    try {
-
-        const response =
-            await fetch(
-                INDEX_URL,
-                {
-                    cache: "no-store"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Không thể tải index.json. HTTP " +
-                response.status
-            );
-
+function renderGenres() {
+    const genresSet = new Set();
+    storiesData.forEach(s => {
+        if (Array.isArray(s.genres)) {
+            s.genres.forEach(g => genresSet.add(g));
         }
+    });
+    
+    genreContainer.innerHTML = '<button class="genre-btn active" data-genre="ALL">Tất cả</button>';
+    genresSet.forEach(genre => {
+        const btn = document.createElement('button');
+        btn.className = 'genre-btn';
+        btn.dataset.genre = genre;
+        btn.textContent = genre;
+        btn.onclick = () => filterByGenre(genre, btn);
+        genreContainer.appendChild(btn);
+    });
+}
 
+function filterByGenre(genre, btnElement) {
+    document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+    btnElement.classList.add('active');
 
-        const data =
-            await response.json();
+    if (genre === 'ALL') {
+        renderStoryGrid(storiesData);
+    } else {
+        renderStoryGrid(storiesData.filter(s => Array.isArray(s.genres) && s.genres.includes(genre)));
+    }
+}
 
+// 2. HIỂN THỊ CHI TIẾT TRUYỆN & DANH SÁCH NHÓM CHƯƠNG
+function showStoryDetail(storyId) {
+    currentStory = storiesData.find(s => s.id === storyId);
+    if (!currentStory) return;
 
-        /*
-         * Hỗ trợ:
-         *
-         * {
-         *   "chapters": [...]
-         * }
-         *
-         * hoặc:
-         *
-         * [...]
-         */
+    viewDetail.classList.remove('hidden');
+    document.title = `${currentStory.title} - Chi tiết`;
 
-        if (Array.isArray(data)) {
+    const genresTags = Array.isArray(currentStory.genres) 
+        ? currentStory.genres.map(g => `<span class="tag">${g}</span>`).join(' ') 
+        : '';
 
-            chapterFiles = data;
+    const firstChapNum = getFirstChapNum(currentStory);
+    const totalChapters = currentStory.chapters ? currentStory.chapters.length : 0;
+    const endFirstPageNum = Math.min(CHAPTERS_PER_PAGE, totalChapters) + firstChapNum - 1;
 
-        } else if (
-            Array.isArray(data.chapters)
-        ) {
+    const firstGroupLabel = (firstChapNum === endFirstPageNum) 
+        ? `Chương ${firstChapNum}` 
+        : `Chương ${firstChapNum} - ${endFirstPageNum}`;
 
-            chapterFiles =
-                data.chapters;
+    storyDetailContent.innerHTML = `
+        <img src="${currentStory.cover}" alt="${currentStory.title}">
+        <div class="story-detail-info">
+            <h2>${currentStory.title}</h2>
+            <p><strong>Tác giả:</strong> ${currentStory.author}</p>
+            <p><strong>Trạng thái:</strong> ${currentStory.status}</p>
+            <div>${genresTags}</div>
+            <p style="margin-top: 10px; color: var(--text-secondary);">${currentStory.description}</p>
+            ${totalChapters > 0 ? `
+                <button class="pagination" style="width: fit-content; margin-top: 15px;" 
+                        onclick="window.location.hash='read/\${currentStory.id}/page/1'">
+                    🚀 Đọc Từ Đầu Đầu
+                </button>
+            ` : '<p style="color: red; margin-top: 10px;">Chưa có chương nào.</p>'}
+        </div>
+    `;
 
-        } else {
+    renderChapterGroupList();
+}
 
-            throw new Error(
-                "index.json không có danh sách chapters."
-            );
+// RENDER DANH SÁCH THEO TỪNG NHÓM 10 CHƯƠNG (TÍNH TỪ FIRST_CHAP)
+function renderChapterGroupList() {
+    const totalChapters = currentStory.chapters ? currentStory.chapters.length : 0;
+    const chapterWrapper = document.querySelector('.chapter-list-wrapper');
 
-        }
-
-
-        if (chapterFiles.length === 0) {
-
-            throw new Error(
-                "Danh sách chapter đang trống."
-            );
-
-        }
-
-
-        totalPages =
-            Math.ceil(
-                chapterFiles.length /
-                CHAPTERS_PER_PAGE
-            );
-
-
-        currentPage =
-            getPageFromUrl();
-
-
-        if (currentPage > totalPages) {
-
-            currentPage = totalPages;
-
-        }
-
-
-        $("year").textContent =
-            new Date().getFullYear();
-
-
-        /*
-         * Nếu index.json có title
-         */
-
-        if (
-            !Array.isArray(data) &&
-            data.title
-        ) {
-
-            $("storyInfo").textContent =
-                data.title +
-                " · " +
-                chapterFiles.length +
-                " chương";
-
-        } else {
-
-            $("storyInfo").textContent =
-                "Truyện · " +
-                chapterFiles.length +
-                " chương";
-
-        }
-
-
-        await loadCurrentPage();
-
-    } catch (error) {
-
-        showError(error.message);
-
+    if (totalChapters === 0) {
+        chapterWrapper.innerHTML = `
+            <h3>📖 Danh Sách Chương</h3>
+            <p style="margin-top: 10px; color: var(--text-secondary);">Chưa có chương nào.</p>
+        `;
+        return;
     }
 
+    const firstChapNum = getFirstChapNum(currentStory);
+    const totalPages = Math.ceil(totalChapters / CHAPTERS_PER_PAGE);
+    let groupItemsHTML = '';
+
+    for (let p = 1; p <= totalPages; p++) {
+        const startNum = (p - 1) * CHAPTERS_PER_PAGE + firstChapNum;
+        const endNum = Math.min(p * CHAPTERS_PER_PAGE, totalChapters) + firstChapNum - 1;
+
+        const groupLabel = (startNum === endNum) 
+            ? `Chương ${startNum}` 
+            : `Chương ${startNum} - ${endNum}`;
+
+        groupItemsHTML += `
+            <li class="chapter-item" onclick="window.location.hash='read/${currentStory.id}/page/${p}'">
+                <span>📖 <strong>${groupLabel}</strong></span>
+                <small style="color: var(--accent); font-weight: 600;">Đọc nhóm này →</small>
+            </li>
+        `;
+    }
+
+    chapterWrapper.innerHTML = `
+        <h3>📖 Danh Sách Nhóm Chương (${CHAPTERS_PER_PAGE} chương / phần)</h3>
+        <ul class="chapter-list" style="margin-top: 15px;">
+            ${groupItemsHTML}
+        </ul>
+    `;
 }
 
+// 3. ĐỌC TRUYỆN GOM 10 CHƯƠNG / TRANG
+async function showReader(storyId, pageNum = 1, targetChapFile = null) {
+    viewReader.classList.remove('hidden');
+    
+    currentStory = storiesData.find(s => s.id === storyId);
+    if (!currentStory || !currentStory.chapters) return;
 
-/* =====================================
-   LOAD CURRENT PAGE
-===================================== */
+    currentPageIndex = pageNum;
 
-async function loadCurrentPage() {
+    document.getElementById('btnBackToDetail').onclick = () => {
+        window.location.hash = `story/${storyId}`;
+    };
 
-    $("loading")
-        .classList
-        .remove("hidden");
+    await fetchPageContent(storyId, pageNum, targetChapFile);
 
+    updateChapterSelect();
+    updatePaginationButtons();
+}
 
-    $("error")
-        .classList
-        .add("hidden");
+async function fetchPageContent(storyId, pageNum, targetChapFile = null) {
+    loadingEl.classList.remove('hidden');
+    errorEl.classList.add('hidden');
+    chaptersContainer.innerHTML = '';
 
+    const firstChapNum = getFirstChapNum(currentStory);
+    const startIndex = (pageNum - 1) * CHAPTERS_PER_PAGE;
+    const endIndex = Math.min(startIndex + CHAPTERS_PER_PAGE, currentStory.chapters.length);
+    const pageChapFiles = currentStory.chapters.slice(startIndex, endIndex);
 
-    $("chapters").innerHTML = "";
+    const startChapNum = startIndex + firstChapNum;
+    const endChapNum = endIndex - 1 + firstChapNum;
 
-
-    updatePagination();
-
+    const pageTitleText = (startChapNum === endChapNum) ? `Chương ${startChapNum}` : `Chương ${startChapNum} - ${endChapNum}`;
+    document.title = `${currentStory.title} - ${pageTitleText}`;
+    storyInfo.innerHTML = `<h2>${currentStory.title}</h2><p>Đang đọc: ${pageTitleText}</p>`;
 
     try {
-
-        const start =
-            (currentPage - 1) *
-            CHAPTERS_PER_PAGE;
-
-
-        const end =
-            Math.min(
-                start + CHAPTERS_PER_PAGE,
-                chapterFiles.length
-            );
-
-
-        const files =
-            chapterFiles.slice(
-                start,
-                end
-            );
-
-
-        /*
-         * Tải 10 file JSON cùng lúc
-         */
-
-        const requests =
-            files.map(
-                function (filename) {
-
-                    return fetchChapter(
-                        filename
-                    );
-
-                }
-            );
-
-
-        const chapters =
-            await Promise.all(
-                requests
-            );
-
-
-        renderChapters(
-            chapters
+        const fetchPromises = pageChapFiles.map(chapFile =>
+            fetch(`./data/${storyId}/${chapFile}`)
+                .then(res => {
+                    if (!res.ok) throw new Error(`Không thể tải: ${chapFile}`);
+                    return res.json();
+                })
+                .catch(err => ({ error: true, file: chapFile, message: err.message }))
         );
 
+        const results = await Promise.all(fetchPromises);
+        loadingEl.classList.add('hidden');
 
-        $("loading")
-            .classList
-            .add("hidden");
+        results.forEach((data, idx) => {
+            const globalChapIndex = startIndex + idx + firstChapNum;
+            const chapFile = pageChapFiles[idx];
 
+            const chapterBlock = document.createElement('article');
+            chapterBlock.className = 'single-chapter-block';
+            chapterBlock.id = `chap-${chapFile.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
+            if (data.error) {
+                chapterBlock.innerHTML = `
+                    <div class="chapter-divider"><h3>Chương ${globalChapIndex}</h3></div>
+                    <p style="color: red; text-align: center;">❌ Không thể tải file ${chapFile}</p>
+                `;
+            } else {
+                const chapTitle = data.title || `Chương ${globalChapIndex}`;
+                let contentHTML = '';
+
+                if (Array.isArray(data.content)) {
+                    contentHTML = data.content.map(p => `<p>${p}</p>`).join('');
+                } else if (data.content) {
+                    contentHTML = `<p>${data.content}</p>`;
+                }
+
+                chapterBlock.innerHTML = `
+                    <div class="chapter-divider">
+                        <h3>${chapTitle}</h3>
+                    </div>
+                    <div class="chapter-body">
+                        ${contentHTML}
+                    </div>
+                `;
+            }
+            chaptersContainer.appendChild(chapterBlock);
         });
 
-
-    } catch (error) {
-
-        $("loading")
-            .classList
-            .add("hidden");
-
-
-        showError(
-            error.message
-        );
-
-    }
-
-}
-
-
-/* =====================================
-   LOAD ONE CHAPTER
-===================================== */
-
-async function fetchChapter(filename) {
-
-    /*
-     * Đảm bảo filename không bị
-     * thêm / ở đầu
-     */
-
-    const cleanFilename =
-        String(filename)
-            .replace(/^\/+/, "");
-
-
-    const url =
-        "./data/" +
-        encodeURI(cleanFilename);
-
-
-    const response =
-        await fetch(
-            url,
-            {
-                cache: "no-store"
+        if (targetChapFile) {
+            const targetId = `chap-${targetChapFile.replace(/[^a-zA-Z0-9]/g, '-')}`;
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+                setTimeout(() => targetEl.scrollIntoView({ behavior: 'smooth' }), 200);
+                return;
             }
-        );
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            "Không thể tải chapter: " +
-            filename +
-            " (HTTP " +
-            response.status +
-            ")"
-        );
-
-    }
-
-
-    return await response.json();
-
-}
-
-
-/* =====================================
-   CREATE CHAPTER HTML
-===================================== */
-
-function createChapterHtml(chapter) {
-
-    let lines = [];
-
-    if (Array.isArray(chapter.content)) {
-
-        lines = chapter.content;
-
-    } else {
-
-        lines = String(
-            chapter.content || ""
-        ).split(/\r?\n/);
-
-    }
-
-
-    let contentHtml = "";
-
-
-    for (const line of lines) {
-
-        const text = String(
-            line == null ? "" : line
-        );
-
-
-        if (text.trim() === "") {
-            continue;
         }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
+    } catch (err) {
+        loadingEl.classList.add('hidden');
+        errorEl.classList.remove('hidden');
+        errorEl.textContent = err.message;
+    }
+}
 
-        contentHtml +=
-            "<p>" +
-            escapeHtml(text) +
-            "</p>";
+function updateChapterSelect() {
+    chapterSelect.innerHTML = '';
+    const totalPages = Math.ceil(currentStory.chapters.length / CHAPTERS_PER_PAGE);
+    const firstChapNum = getFirstChapNum(currentStory);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const startNum = (i - 1) * CHAPTERS_PER_PAGE + firstChapNum;
+        const endNum = Math.min(i * CHAPTERS_PER_PAGE, currentStory.chapters.length) + firstChapNum - 1;
+
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = (startNum === endNum) ? `Chương ${startNum}` : `Chương ${startNum} - ${endNum}`;
+        if (i === currentPageIndex) option.selected = true;
+        
+        chapterSelect.appendChild(option);
     }
 
-
-    const title =
-        chapter.title ||
-        (
-            "Chương " +
-            (
-                chapter.chapterNumber ||
-                ""
-            )
-        );
-
-
-    return (
-        '<article class="chapter">' +
-
-            '<h2 class="chapter-title">' +
-
-                escapeHtml(title) +
-
-            "</h2>" +
-
-            '<div class="chapter-content">' +
-
-                contentHtml +
-
-            "</div>" +
-
-        "</article>"
-    );
-}
-
-
-/* =====================================
-   RENDER CHAPTERS
-===================================== */
-
-function renderChapters(chapters) {
-
-    let html = "";
-
-
-    for (
-        const chapter of chapters
-    ) {
-
-        html +=
-            createChapterHtml(
-                chapter
-            );
-
-    }
-
-
-    $("chapters").innerHTML =
-        html;
-
-}
-
-
-/* =====================================
-   PAGINATION UI
-===================================== */
-
-function updatePagination() {
-
-    const text =
-        "Trang " +
-        currentPage +
-        " / " +
-        totalPages;
-
-
-    $("pageInfo").textContent =
-        text;
-
-
-    $("pageInfoBottom").textContent =
-        text;
-
-
-    const isFirst =
-        currentPage <= 1;
-
-
-    const isLast =
-        currentPage >= totalPages;
-
-
-    $("prevButton").disabled =
-        isFirst;
-
-
-    $("prevButtonBottom").disabled =
-        isFirst;
-
-
-    $("nextButton").disabled =
-        isLast;
-
-
-    $("nextButtonBottom").disabled =
-        isLast;
-
-}
-
-
-/* =====================================
-   GO TO PAGE
-===================================== */
-
-async function goToPage(page) {
-
-    if (
-        page < 1 ||
-        page > totalPages
-    ) {
-
-        return;
-
-    }
-
-
-    currentPage = page;
-
-
-    window.history.pushState(
-        {},
-        "",
-        "?page=" + currentPage
-    );
-
-
-    await loadCurrentPage();
-
-}
-
-
-/* =====================================
-   ERROR
-===================================== */
-
-function showError(message) {
-
-    $("loading")
-        .classList
-        .add("hidden");
-
-
-    $("error").textContent =
-        message;
-
-
-    $("error")
-        .classList
-        .remove("hidden");
-
-}
-
-
-/* =====================================
-   BUTTON EVENTS
-===================================== */
-
-$("prevButton").onclick =
-    function () {
-
-        goToPage(
-            currentPage - 1
-        );
-
+    chapterSelect.onchange = (e) => {
+        window.location.hash = `read/${currentStory.id}/page/${e.target.value}`;
     };
+}
 
+function updatePaginationButtons() {
+    const totalPages = Math.ceil(currentStory.chapters.length / CHAPTERS_PER_PAGE);
+    const isFirst = currentPageIndex === 1;
+    const isLast = currentPageIndex === totalPages;
 
-$("prevButtonBottom").onclick =
-    function () {
+    prevButton.disabled = prevButtonBottom.disabled = isFirst;
+    nextButton.disabled = nextButtonBottom.disabled = isLast;
 
-        goToPage(
-            currentPage - 1
-        );
-
-    };
-
-
-$("nextButton").onclick =
-    function () {
-
-        goToPage(
-            currentPage + 1
-        );
-
-    };
-
-
-$("nextButtonBottom").onclick =
-    function () {
-
-        goToPage(
-            currentPage + 1
-        );
-
-    };
-
-
-/* =====================================
-   BROWSER BACK / FORWARD
-===================================== */
-
-window.addEventListener(
-    "popstate",
-    function () {
-
-        currentPage =
-            getPageFromUrl();
-
-
-        if (
-            currentPage < 1
-        ) {
-
-            currentPage = 1;
-
+    const navigateToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            window.location.hash = `read/${currentStory.id}/page/${page}`;
         }
+    };
 
+    prevButton.onclick = prevButtonBottom.onclick = () => navigateToPage(currentPageIndex - 1);
+    nextButton.onclick = nextButtonBottom.onclick = () => navigateToPage(currentPageIndex + 1);
+}
 
-        if (
-            currentPage > totalPages
-        ) {
+// EVENT LISTENERS
+function setupEventListeners() {
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase().trim();
+        const filtered = storiesData.filter(s => 
+            s.title.toLowerCase().includes(term) || 
+            s.author.toLowerCase().includes(term)
+        );
+        renderStoryGrid(filtered);
+    });
 
-            currentPage =
-                totalPages;
+    document.getElementById('themeToggleBtn').onclick = () => {
+        document.body.classList.toggle('theme-light');
+    };
 
+    document.getElementById('btnFontInc').onclick = () => {
+        currentReaderFontSize += 2;
+        document.documentElement.style.setProperty('--font-size-reader', `${currentReaderFontSize}px`);
+    };
+    
+    document.getElementById('btnFontDec').onclick = () => {
+        if (currentReaderFontSize > 12) {
+            currentReaderFontSize -= 2;
+            document.documentElement.style.setProperty('--font-size-reader', `${currentReaderFontSize}px`);
         }
-
-
-        loadCurrentPage();
-
-    }
-);
-
-
-/* =====================================
-   START
-===================================== */
-
-loadIndex();
+    };
+}

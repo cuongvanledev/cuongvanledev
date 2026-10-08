@@ -1,136 +1,121 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Đọc Truyện</title>
-
-    <link
-        rel="stylesheet"
-        href="./assets/style.css"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đọc Truyện Online - Cuong Van Le Dev</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+<body class="theme-dark">
 
-<body>
+    <!-- HEADER TOP -->
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="#home" class="logo">
+                <span class="logo-icon">📚</span>
+                <span class="logo-text">Đọc Truyen<span class="highlight">Dev</span></span>
+            </a>
+            
+            <nav class="nav-links">
+                <a href="#home" class="active">Trang chủ</a>
+                <button id="themeToggleBtn" class="btn-theme-toggle" title="Đổi giao diện">🌙 / ☀️</button>
+            </nav>
+        </div>
+    </header>
 
-<header class="site-header">
-
-    <div class="header-inner">
-
-        <a
-            href="./"
-            class="logo"
-        >
-            📚 Đọc Truyện
-        </a>
-
-        <div
-            id="storyInfo"
-            class="story-info"
-        >
-            Đang tải...
+    <!-- VIEW 1: TRANG MENU / DANH SÁCH TRUYỆN -->
+    <section id="viewHome" class="view-section">
+        <!-- Banner Khám Phá -->
+        <div class="hero-banner">
+            <h1>Khám Phá Thế Giới Truyện Hay</h1>
+            <p>Hàng ngàn chương truyện tiên hiệp, huyền huyễn, kỳ ảo được cập nhật liên tục.</p>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Tìm tên truyện, tác giả...">
+                <span class="search-icon">🔍</span>
+            </div>
         </div>
 
-    </div>
+        <div class="container">
+            <!-- Bộ Lọc Thể Loại -->
+            <div class="filter-bar">
+                <span class="filter-label">Thể loại:</span>
+                <div class="genre-tags" id="genreContainer">
+                    <button class="genre-btn active" data-genre="ALL">Tất cả</button>
+                </div>
+            </div>
 
-</header>
-
-
-<main class="reader">
-
-    <!-- PAGINATION TOP -->
-
-    <nav class="pagination">
-
-        <button
-            id="prevButton"
-            type="button"
-        >
-            ← Trang trước
-        </button>
-
-        <span id="pageInfo">
-            Trang 1 / 1
-        </span>
-
-        <button
-            id="nextButton"
-            type="button"
-        >
-            Trang sau →
-        </button>
-
-    </nav>
-
-
-    <!-- LOADING -->
-
-    <div
-        id="loading"
-        class="loading"
-    >
-        Đang tải chương...
-    </div>
-
-
-    <!-- ERROR -->
-
-    <div
-        id="error"
-        class="error hidden"
-    >
-    </div>
-
-
-    <!-- CHAPTERS -->
-
-    <section id="chapters">
+            <!-- Grid Danh Sách Truyện -->
+            <h2 class="section-title">✨ Danh Sách Truyện</h2>
+            <div id="storyGrid" class="story-grid">
+                <!-- Nội dung truyện sẽ tự động render ở đây -->
+            </div>
+        </div>
     </section>
 
+    <!-- VIEW 2: CHI TIẾT TRUYỆN -->
+    <section id="viewDetail" class="view-section hidden">
+        <div class="container">
+            <button class="btn-back" onclick="window.location.hash='home'">← Quay lại danh sách</button>
+            
+            <div id="storyDetailContent" class="story-detail-card">
+                <!-- Thông tin chi tiết truyện render từ JS -->
+            </div>
 
-    <!-- PAGINATION BOTTOM -->
+            <div class="chapter-list-wrapper">
+                <h3>📖 Danh Sách Chương</h3>
+                <ul id="chapterList" class="chapter-list">
+                    <!-- Danh sách chương render từ JS -->
+                </ul>
+            </div>
+        </div>
+    </section>
 
-    <nav class="pagination">
+    <!-- VIEW 3: TRANG ĐỌC TRUYỆN -->
+    <section id="viewReader" class="view-section hidden">
+        <div class="reader-toolbar">
+            <button class="btn-back-story" id="btnBackToDetail">← Chi tiết truyện</button>
+            <div class="font-controls">
+                <span>Cỡ chữ:</span>
+                <button id="btnFontDec">A-</button>
+                <button id="btnFontInc">A+</button>
+            </div>
+        </div>
 
-        <button
-            id="prevButtonBottom"
-            type="button"
-        >
-            ← Trang trước
-        </button>
+        <div class="reader-container">
+            <!-- Thanh điều hướng chương TRÊN -->
+            <nav class="pagination">
+                <button id="prevButton" type="button">← Chương trước</button>
+                <select id="chapterSelect" class="chapter-select"></select>
+                <button id="nextButton" type="button">Chương sau →</button>
+            </nav>
 
-        <span id="pageInfoBottom">
-            Trang 1 / 1
-        </span>
+            <div id="storyInfo" class="reader-header-info"></div>
 
-        <button
-            id="nextButtonBottom"
-            type="button"
-        >
-            Trang sau →
-        </button>
+            <!-- Loading & Error -->
+            <div id="loading" class="loading">⏳ Đang tải chương truyện...</div>
+            <div id="error" class="error hidden"></div>
 
-    </nav>
+            <!-- Nội dung chương -->
+            <section id="chapters" class="chapter-content-box"></section>
 
-</main>
+            <!-- Thanh điều hướng chương DƯỚI -->
+            <nav class="pagination">
+                <button id="prevButtonBottom" type="button">← Chương trước</button>
+                <span id="pageInfoBottom">Chương 1 / 1</span>
+                <button id="nextButtonBottom" type="button">Chương sau →</button>
+            </nav>
+        </div>
+    </section>
 
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <p>© <span id="year"></span> <strong>Cuong Van Le Dev</strong>. Tất cả quyền được bảo lưu.</p>
+    </footer>
 
-<footer>
-
-    © <span id="year"></span>
-    Cuong Van Le Dev
-
-</footer>
-
-
-<script src="./assets/app.js"></script>
-
+    <script src="./assets/app.js"></script>
 </body>
-
 </html>
