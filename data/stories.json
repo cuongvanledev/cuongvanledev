@@ -1,36 +1,11 @@
 [
   {
-    "id": "edited_chatgpt",
-    "title": "Truyện edited_chatgpt",
-    "author": "Đang cập nhật",
-    "cover": "https://picsum.photos/400/600",
-    "status": "Đang ra",
-    "genres": [
-      "Khác"
-    ],
-    "description": "Mô tả đang được cập nhật...",
-    "chapters": []
-  },
-  {
-    "id": "root",
-    "title": "Truyện root",
-    "author": "Đang cập nhật",
-    "cover": "https://picsum.photos/400/600",
-    "status": "Đang ra",
-    "genres": [
-      "Khác"
-    ],
-    "description": "Mô tả đang được cập nhật...",
-    "chapters": [
-      "chap-3338075_chapter_368.json"
-    ]
-  },
-  {
     "id": "tinh_vuc_bien_doi_lon",
     "title": "Truyện Tinh vực biến đổi lớn",
     "author": "Đang cập nhật",
     "cover": "https://picsum.photos/400/600",
     "status": "Đang ra",
+    "fisrtChapter": "368",
     "genres": [
       "Khác"
     ],
@@ -679,6 +654,7 @@
     "author": "Đang cập nhật",
     "cover": "https://picsum.photos/400/600",
     "status": "Đang ra",
+    "fisrtChapter": "368",
     "genres": [
       "Khác"
     ],

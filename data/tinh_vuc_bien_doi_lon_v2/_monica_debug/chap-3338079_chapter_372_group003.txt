@@ -5,3 +5,10 @@ GROUP: 3
 ATTEMPT: initial
 META: HTTP=200; elapsed=14.7s; response_chars=3185; content_type=text/event-stream;charset=utf-8; paragraphs=28
 
+
+================================================================================
+FILE: chap-3338079_chapter_372.json
+GROUP: 3
+ATTEMPT: initial
+META: HTTP=200; elapsed=13.0s; response_chars=3155; content_type=text/event-stream;charset=utf-8; paragraphs=28
+
