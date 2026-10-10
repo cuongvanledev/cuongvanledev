@@ -679,14 +679,20 @@
     "author": "Đang cập nhật",
     "cover": "https://picsum.photos/400/600",
     "status": "Đang ra",
-    "first_chapter": "368",
     "genres": [
       "Khác"
     ],
     "description": "Mô tả đang được cập nhật...",
     "chapters": [
       "chap-3338075_chapter_368_edited.json",
-      "chap-3338076_chapter_369_edited.json"
+      "chap-3338076_chapter_369_edited.json",
+      "chap-3338077_chapter_370_edited.json",
+      "chap-3338078_chapter_371_edited.json",
+      "chap-3338079_chapter_372_edited.json",
+      "chap-3338080_chapter_373_edited.json",
+      "chap-3338081_chapter_374_edited.json",
+      "chap-3338082_chapter_375_edited.json",
+      "chap-3338083_chapter_376_edited.json"
     ]
   }
 ]
