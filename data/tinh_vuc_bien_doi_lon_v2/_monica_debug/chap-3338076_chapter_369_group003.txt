@@ -1,0 +1,7 @@
+
+================================================================================
+FILE: chap-3338076_chapter_369.json
+GROUP: 3
+ATTEMPT: initial
+META: HTTP=200; elapsed=21.6s; response_chars=3343; content_type=text/event-stream;charset=utf-8; paragraphs=25
+

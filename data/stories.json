@@ -5,14 +5,11 @@
     "author": "Đang cập nhật",
     "cover": "https://picsum.photos/400/600",
     "status": "Đang ra",
-     "first_chap": 367,
     "genres": [
       "Khác"
     ],
     "description": "Mô tả đang được cập nhật...",
-    "chapters": [
-      "chap-3338074_chapter_367_monica_test.json"
-    ]
+    "chapters": []
   },
   {
     "id": "root",
@@ -20,13 +17,12 @@
     "author": "Đang cập nhật",
     "cover": "https://picsum.photos/400/600",
     "status": "Đang ra",
-     "first_chap": 367,
     "genres": [
       "Khác"
     ],
     "description": "Mô tả đang được cập nhật...",
     "chapters": [
-      "chap-3338074_chapter_367.json"
+      "chap-3338075_chapter_368.json"
     ]
   },
   {
@@ -35,13 +31,11 @@
     "author": "Đang cập nhật",
     "cover": "https://picsum.photos/400/600",
     "status": "Đang ra",
-     "first_chap": 367,
     "genres": [
       "Khác"
     ],
     "description": "Mô tả đang được cập nhật...",
     "chapters": [
-      "chap-3338074_chapter_367.json",
       "chap-3338075_chapter_368.json",
       "chap-3338076_chapter_369.json",
       "chap-3338077_chapter_370.json",
@@ -681,17 +675,18 @@
   },
   {
     "id": "tinh_vuc_bien_doi_lon_v2",
-    "title": "Truyện tinh_vuc_bien_doi_lon_v2",
+    "title": "Truyện Truyện Tinh vực biến đổi lớn",
     "author": "Đang cập nhật",
     "cover": "https://picsum.photos/400/600",
     "status": "Đang ra",
-     "first_chap": 367,
+    "first_chapter": "368",
     "genres": [
       "Khác"
     ],
     "description": "Mô tả đang được cập nhật...",
     "chapters": [
-      "chap-3338074_chapter_367_monica_test.json"
+      "chap-3338075_chapter_368_edited.json",
+      "chap-3338076_chapter_369_edited.json"
     ]
   }
 ]

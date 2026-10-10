@@ -1,0 +1,7 @@
+
+================================================================================
+FILE: chap-3338081_chapter_374.json
+GROUP: 4
+ATTEMPT: initial
+META: HTTP=200; elapsed=22.3s; response_chars=3247; content_type=text/event-stream;charset=utf-8; paragraphs=24
+
