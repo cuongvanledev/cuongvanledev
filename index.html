@@ -3,56 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đọc Truyện Online - Cuong Van Le Dev</title>
+    <title>Đọc Truyện Online - Chuyên Nghiệp & Mượt Mà</title>
     <link rel="stylesheet" href="./assets/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="theme-dark">
+<body class="theme-dark reader-theme-dark">
 
     <!-- HEADER TOP -->
     <header class="site-header">
         <div class="header-inner">
             <a href="#home" class="logo">
-                <span class="logo-icon">📚</span>
-                <span class="logo-text">Đọc Truyen<span class="highlight">Dev</span></span>
+                <span class="logo-icon">📖</span>
+                <span class="logo-text">Truyen<span class="highlight">Pro</span></span>
             </a>
             
             <nav class="nav-links">
-                <a href="#home" class="active">Trang chủ</a>
-                <button id="themeToggleBtn" class="btn-theme-toggle" title="Đổi giao diện">🌙 / ☀️</button>
+                <a href="#home" class="nav-home-link active">Trang Chủ</a>
+                <button id="themeToggleBtn" class="btn-theme-toggle" title="Đổi giao diện Sáng/Tối">
+                    <span class="icon-theme">🌙</span>
+                </button>
             </nav>
         </div>
     </header>
 
-    <!-- VIEW 1: TRANG MENU / DANH SÁCH TRUYỆN -->
+    <!-- VIEW 1: TRANG CHỦ / DANH SÁCH TRUYỆN -->
     <section id="viewHome" class="view-section">
-        <!-- Banner Khám Phá -->
         <div class="hero-banner">
-            <h1>Khám Phá Thế Giới Truyện Hay</h1>
-            <p>Hàng ngàn chương truyện tiên hiệp, huyền huyễn, kỳ ảo được cập nhật liên tục.</p>
-            
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Tìm tên truyện, tác giả...">
-                <span class="search-icon">🔍</span>
+            <div class="hero-content">
+                <h1>Thế Giới Truyện Chữ Đỉnh Cao</h1>
+                <p>Khám phá kho tàng truyện tiên hiệp, huyền huyễn, đô thị cập nhật liên tục.</p>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm tên truyện, tác giả...">
+                </div>
             </div>
         </div>
 
         <div class="container">
-            <!-- Bộ Lọc Thể Loại -->
-            <div class="filter-bar">
-                <span class="filter-label">Thể loại:</span>
+            <div class="filter-section">
+                <div class="filter-header">Thể loại</div>
                 <div class="genre-tags" id="genreContainer">
                     <button class="genre-btn active" data-genre="ALL">Tất cả</button>
                 </div>
             </div>
 
-            <!-- Grid Danh Sách Truyện -->
-            <h2 class="section-title">✨ Danh Sách Truyện</h2>
-            <div id="storyGrid" class="story-grid">
-                <!-- Nội dung truyện sẽ tự động render ở đây -->
+            <div class="section-heading">
+                <h2>✨ Danh Sách Truyện</h2>
+                <span id="storyCountBadge" class="badge-count">0 truyện</span>
             </div>
+            <div id="storyGrid" class="story-grid"></div>
         </div>
     </section>
 
@@ -61,59 +62,78 @@
         <div class="container">
             <button class="btn-back" onclick="window.location.hash='home'">← Quay lại danh sách</button>
             
-            <div id="storyDetailContent" class="story-detail-card">
-                <!-- Thông tin chi tiết truyện render từ JS -->
-            </div>
+            <div id="storyDetailContent" class="story-detail-card"></div>
 
             <div class="chapter-list-wrapper">
-                <h3>📖 Danh Sách Chương</h3>
-                <ul id="chapterList" class="chapter-list">
-                    <!-- Danh sách chương render từ JS -->
-                </ul>
+                <div class="chapter-list-header">
+                    <h3>Danh Sách Chương</h3>
+                </div>
+                <div id="chapterGroupContainer" class="chapter-group-tabs"></div>
+                <ul id="chapterList" class="chapter-list"></ul>
             </div>
         </div>
     </section>
 
-    <!-- VIEW 3: TRANG ĐỌC TRUYỆN -->
+    <!-- VIEW 3: TRANG ĐỌC TRUYỆN (CHUYÊN NGHIỆP GIỐNG WEB THAM KHẢO) -->
     <section id="viewReader" class="view-section hidden">
         <div class="reader-toolbar">
-            <button class="btn-back-story" id="btnBackToDetail">← Chi tiết truyện</button>
-            <div class="font-controls">
-                <span>Cỡ chữ:</span>
-                <button id="btnFontDec">A-</button>
-                <button id="btnFontInc">A+</button>
+            <div class="toolbar-left">
+                <button class="btn-back-story" id="btnBackToDetail" title="Về trang chi tiết">← Mục lục</button>
+                <span id="readerTopTitle" class="reader-top-title">Đang tải...</span>
+            </div>
+            
+            <div class="toolbar-right">
+                <div class="control-group">
+                    <span class="control-label">Cỡ chữ:</span>
+                    <button id="btnFontDec" class="btn-tool">A-</button>
+                    <span id="fontSizeDisplay" class="font-size-val">19px</span>
+                    <button id="btnFontInc" class="btn-tool">A+</button>
+                </div>
+
+                <div class="control-group">
+                    <button id="btnFontFamily" class="btn-tool">Phông: Sans</button>
+                </div>
+
+                <div class="control-group reader-themes">
+                    <button class="r-theme-btn active" data-rtheme="dark">Tối</button>
+                    <button class="r-theme-btn" data-rtheme="sepia">Sepia</button>
+                    <button class="r-theme-btn" data-rtheme="light">Sáng</button>
+                </div>
             </div>
         </div>
 
         <div class="reader-container">
-            <!-- Thanh điều hướng chương TRÊN -->
-            <nav class="pagination">
-                <button id="prevButton" type="button">← Chương trước</button>
-                <select id="chapterSelect" class="chapter-select"></select>
-                <button id="nextButton" type="button">Chương sau →</button>
+            <nav class="pagination-bar top-pagination">
+                <button id="prevButton" class="btn-page" type="button">← Phần trước</button>
+                <div class="select-wrapper">
+                    <select id="chapterSelect" class="chapter-select"></select>
+                </div>
+                <button id="nextButton" class="btn-page" type="button">Phần sau →</button>
             </nav>
 
             <div id="storyInfo" class="reader-header-info"></div>
 
-            <!-- Loading & Error -->
-            <div id="loading" class="loading">⏳ Đang tải chương truyện...</div>
-            <div id="error" class="error hidden"></div>
+            <div id="loading" class="loading-box">
+                <div class="spinner"></div>
+                <p>Đang tải chương truyện...</p>
+            </div>
+            <div id="error" class="error-box hidden"></div>
 
-            <!-- Nội dung chương -->
             <section id="chapters" class="chapter-content-box"></section>
 
-            <!-- Thanh điều hướng chương DƯỚI -->
-            <nav class="pagination">
-                <button id="prevButtonBottom" type="button">← Chương trước</button>
-                <span id="pageInfoBottom">Chương 1 / 1</span>
-                <button id="nextButtonBottom" type="button">Chương sau →</button>
+            <nav class="pagination-bar bottom-pagination">
+                <button id="prevButtonBottom" class="btn-page" type="button">← Phần trước</button>
+                <span id="pageInfoBottom" class="page-info-text">Phần 1 / 1</span>
+                <button id="nextButtonBottom" class="btn-page" type="button">Phần sau →</button>
             </nav>
         </div>
     </section>
 
     <!-- FOOTER -->
     <footer class="site-footer">
-        <p>© <span id="year"></span> <strong>Cuong Van Le Dev</strong>. Tất cả quyền được bảo lưu.</p>
+        <div class="container">
+            <p>© <span id="year"></span> <strong>TruyenPro</strong>. Nền tảng đọc truyện chữ trực tuyến.</p>
+        </div>
     </footer>
 
     <script src="./assets/app.js"></script>

@@ -8,6 +8,15 @@ STORIES_FILE = os.path.join(DATA_DIR, 'stories.json')
 def natural_key(string):
     return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', string)]
 
+def extract_chapter_number(filename):
+    """Trích xuất số chương từ tên file (ưu tiên số đi sau từ 'chapter_')"""
+    match = re.search(r'chapter[_-]?(\d+)', filename, re.IGNORECASE)
+    if match:
+        return match.group(1)
+    # Fallback: lấy số bất kỳ trong tên file nếu không khớp cấu trúc trên
+    numbers = re.findall(r'\d+', filename)
+    return numbers[-1] if numbers else ""
+
 def main():
     existing_stories = {}
 
@@ -37,6 +46,11 @@ def main():
 
         old_info = existing_stories.get(folder, {})
 
+        # Xác định first_chap: Ưu tiên dữ liệu cũ -> Trích xuất từ file đầu tiên -> Mặc định "1"
+        first_chap_val = old_info.get("first_chap")
+        if not first_chap_val and files:
+            first_chap_val = extract_chapter_number(files[0])
+
         story_item = {
             "id": folder,
             "title": old_info.get("title", f"Truyện {folder}"),
@@ -45,6 +59,7 @@ def main():
             "status": old_info.get("status", "Đang ra"),
             "genres": old_info.get("genres", ["Khác"]),
             "description": old_info.get("description", "Mô tả đang được cập nhật..."),
+            "first_chap": first_chap_val or "1",
             "chapters": files
         }
         updated_stories.append(story_item)
