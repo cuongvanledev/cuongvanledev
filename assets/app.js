@@ -1,25 +1,38 @@
 const CHAPTERS_PER_PAGE = 10;
 
 let storiesData = [];
+let audioStoriesData = [];
 let currentStory = null;
+let currentAudioStory = null;
 let currentPageIndex = 1;
 let currentReaderFontSize = 19;
 let currentFontFamilyMode = 0;
+
 const fontFamilies = [
     "'Plus Jakarta Sans', sans-serif",
     "'Lora', Georgia, serif"
 ];
 const fontFamilyNames = ["Sans", "Serif"];
 
+let currentAudioIndex = 0;
+let audioPlayerEl = null;
+let autoNextEnabled = true;
+let isFetchingNextPage = false;
+
 const viewHome = document.getElementById('viewHome');
+const viewAudioHome = document.getElementById('viewAudioHome');
 const viewDetail = document.getElementById('viewDetail');
 const viewReader = document.getElementById('viewReader');
+const viewAudio = document.getElementById('viewAudio');
 
 const storyGrid = document.getElementById('storyGrid');
+const audioGrid = document.getElementById('audioGrid');
 const searchInput = document.getElementById('searchInput');
+const searchAudioInput = document.getElementById('searchAudioInput');
 const genreContainer = document.getElementById('genreContainer');
 const storyDetailContent = document.getElementById('storyDetailContent');
 const storyCountBadge = document.getElementById('storyCountBadge');
+const audioCountBadge = document.getElementById('audioCountBadge');
 
 const chaptersContainer = document.getElementById('chapters');
 const storyInfo = document.getElementById('storyInfo');
@@ -41,7 +54,10 @@ function getFirstChapNum(story) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('year').textContent = new Date().getFullYear();
+    audioPlayerEl = document.getElementById('htmlAudioPlayer');
     setupEventListeners();
+    setupAudioEvents();
+    setupAutoNextChapter();
     await loadStories();
     handleRouting();
 });
@@ -53,14 +69,26 @@ function handleRouting() {
     const parts = hash.split('/');
 
     viewHome.classList.add('hidden');
+    viewAudioHome.classList.add('hidden');
     viewDetail.classList.add('hidden');
     viewReader.classList.add('hidden');
+    viewAudio.classList.add('hidden');
+
+    document.getElementById('navHome').classList.remove('active');
+    document.getElementById('navAudioHome').classList.remove('active');
 
     if (parts[0] === 'home' || parts[0] === '') {
         viewHome.classList.remove('hidden');
-        document.title = "Đọc Truyện Online - TruyenPro";
+        document.getElementById('navHome').classList.add('active');
+        document.title = "Đọc Truyện Chữ Online - TruyenPro";
         window.scrollTo(0, 0);
-    } 
+    }
+    else if (parts[0] === 'audio-home') {
+        viewAudioHome.classList.remove('hidden');
+        document.getElementById('navAudioHome').classList.add('active');
+        document.title = "Kho Audio .MP3 - TruyenPro";
+        window.scrollTo(0, 0);
+    }
     else if (parts[0] === 'story' && parts[1]) {
         showStoryDetail(parts[1]);
         window.scrollTo(0, 0);
@@ -78,15 +106,25 @@ function handleRouting() {
             }
         }
     }
+    else if (parts[0] === 'audio' && parts[1]) {
+        const storyId = parts[1];
+        const trackIndex = parts[2] ? parseInt(parts[2], 10) : 0;
+        showAudioPlayerView(storyId, trackIndex);
+    }
 }
 
 async function loadStories() {
     try {
         const response = await fetch('./data/stories.json');
         if (!response.ok) throw new Error('Không thể tải file stories.json');
-        storiesData = await response.json();
+        const allData = await response.json();
+        
+        storiesData = allData.filter(s => s.chapters && s.chapters.length > 0);
+        audioStoriesData = allData.filter(s => s.audioFiles && s.audioFiles.length > 0);
+
         renderGenres();
         renderStoryGrid(storiesData);
+        renderAudioGrid(audioStoriesData);
     } catch (err) {
         console.error(err);
         storyGrid.innerHTML = `<p style="color: #ef4444; grid-column: 1/-1; text-align: center; padding: 30px;">Không tìm thấy dữ liệu truyện.</p>`;
@@ -98,7 +136,7 @@ function renderStoryGrid(stories) {
     storyCountBadge.textContent = `${stories.length} truyện`;
     
     if (stories.length === 0) {
-        storyGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 30px;">Không tìm thấy truyện phù hợp.</p>';
+        storyGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 30px;">Không tìm thấy truyện chữ phù hợp.</p>';
         return;
     }
 
@@ -122,6 +160,37 @@ function renderStoryGrid(stories) {
             </div>
         `;
         storyGrid.appendChild(card);
+    });
+}
+
+function renderAudioGrid(audioStories) {
+    audioGrid.innerHTML = '';
+    audioCountBadge.textContent = `${audioStories.length} bộ`;
+    
+    if (audioStories.length === 0) {
+        audioGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 30px;">Chưa có bộ audio nào.</p>';
+        return;
+    }
+
+    audioStories.forEach(story => {
+        const card = document.createElement('div');
+        card.className = 'story-card';
+        card.onclick = () => window.location.hash = `audio/${story.id}/0`;
+
+        const totalTracks = story.audioFiles ? story.audioFiles.length : 0;
+
+        card.innerHTML = `
+            <img src="${story.cover}" alt="${story.title}" loading="lazy" onerror="this.src='https://picsum.photos/400/600'">
+            <div class="story-card-body">
+                <div style="margin-bottom: 4px;"><span class="tag" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">Audio .MP3</span></div>
+                <div class="story-card-title">${story.title}</div>
+                <div class="story-card-meta">
+                    <span>${totalTracks} tập</span>
+                    <span style="color: #10b981; font-weight: 600;">Nghe ngay</span>
+                </div>
+            </div>
+        `;
+        audioGrid.appendChild(card);
     });
 }
 
@@ -175,7 +244,7 @@ function showStoryDetail(storyId) {
                 <button class="btn-read-start" onclick="window.location.hash='read/\${currentStory.id}/page/1'">
                     🚀 Đọc Từ Chương \${firstChapNum}
                 </button>
-            ` : '<p style="color: #ef4444;">Đang cập nhật chương...</p>'}
+            ` : ''}
         </div>
     `;
 
@@ -331,6 +400,128 @@ async function fetchPageContent(storyId, pageNum, targetChapFile = null) {
     }
 }
 
+function setupAutoNextChapter() {
+    window.addEventListener('scroll', () => {
+        if (viewReader.classList.contains('hidden') || !autoNextEnabled || isFetchingNextPage) return;
+
+        const scrollPosition = window.innerHeight + window.scrollY;
+        const threshold = document.documentElement.scrollHeight - 150;
+
+        if (scrollPosition >= threshold) {
+            const totalPages = Math.ceil(currentStory.chapters.length / CHAPTERS_PER_PAGE);
+            
+            if (currentPageIndex < totalPages) {
+                isFetchingNextPage = true;
+                const nextPage = currentPageIndex + 1;
+                window.location.hash = `read/${currentStory.id}/page/${nextPage}`;
+                
+                setTimeout(() => {
+                    isFetchingNextPage = false;
+                }, 1000);
+            }
+        }
+    });
+}
+
+// ==========================================
+// TRANG NGHE AUDIO ĐỘC LẬP (.MP3) & TỰ ĐỘNG PHÁT
+// ==========================================
+function showAudioPlayerView(storyId, trackIndex = 0) {
+    viewAudio.classList.remove('hidden');
+    currentAudioStory = audioStoriesData.find(s => s.id === storyId);
+    if (!currentAudioStory) return;
+
+    document.getElementById('audioStoryTitle').textContent = currentAudioStory.title;
+
+    const audioFiles = currentAudioStory.audioFiles || [];
+    if (audioFiles.length === 0) {
+        document.getElementById('audioCurrentTrackTitle').textContent = "Chưa có file audio (.mp3).";
+        document.getElementById('audioPlaylist').innerHTML = '';
+        return;
+    }
+
+    currentAudioIndex = (trackIndex >= 0 && trackIndex < audioFiles.length) ? trackIndex : 0;
+    renderAudioPlaylist(audioFiles);
+    loadAndPlayAudioTrack(currentAudioIndex, false);
+}
+
+function renderAudioPlaylist(audioFiles) {
+    const playlistEl = document.getElementById('audioPlaylist');
+    let html = '';
+    audioFiles.forEach((item, idx) => {
+        const activeClass = idx === currentAudioIndex ? 'active' : '';
+        html += `
+            <li class="audio-item ${activeClass}" onclick="window.location.hash='audio/${currentAudioStory.id}/${idx}'">
+                <span>🎧 ${item.title || ('Tập ' + (idx + 1))}</span>
+                <span class="audio-item-sub">Phát ngay</span>
+            </li>
+        `;
+    });
+    playlistEl.innerHTML = html;
+}
+
+function loadAndPlayAudioTrack(index, autoPlay = true) {
+    const audioFiles = currentAudioStory.audioFiles;
+    if (!audioFiles || !audioFiles[index]) return;
+
+    currentAudioIndex = index;
+    const track = audioFiles[index];
+
+    document.getElementById('audioCurrentTrackTitle').textContent = `Đang phát: ${track.title || ('Tập ' + (index + 1))}`;
+    
+    const items = document.querySelectorAll('.audio-item');
+    items.forEach((el, i) => {
+        if (i === index) el.classList.add('active');
+        else el.classList.remove('active');
+    });
+
+    audioPlayerEl.src = track.url;
+    audioPlayerEl.load();
+
+    const storageKey = `audio_progress_${currentAudioStory.id}_${index}`;
+    const savedTime = localStorage.getItem(storageKey);
+    if (savedTime && !isNaN(savedTime)) {
+        audioPlayerEl.currentTime = parseFloat(savedTime);
+    }
+
+    if (autoPlay) {
+        const playPromise = audioPlayerEl.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Trình duyệt chặn tự động phát:", error);
+                document.getElementById('audioCurrentTrackTitle').textContent = `Đã tải: ${track.title || ('Tập ' + (index + 1))} (Nhấn Play để nghe)`;
+            });
+        }
+    }
+
+    localStorage.setItem(`last_audio_${currentAudioStory.id}`, index);
+}
+
+function setupAudioEvents() {
+    if (!audioPlayerEl) return;
+
+    audioPlayerEl.addEventListener('timeupdate', () => {
+        if (!currentAudioStory || !currentAudioStory.audioFiles) return;
+        const storageKey = `audio_progress_${currentAudioStory.id}_${currentAudioIndex}`;
+        localStorage.setItem(storageKey, audioPlayerEl.currentTime);
+    });
+
+    audioPlayerEl.addEventListener('ended', () => {
+        if (!currentAudioStory || !currentAudioStory.audioFiles) return;
+        const nextIndex = currentAudioIndex + 1;
+        if (nextIndex < currentAudioStory.audioFiles.length) {
+            localStorage.removeItem(`audio_progress_${currentAudioStory.id}_${currentAudioIndex}`);
+            
+            // Tự động chuyển và ép phát tiếp tục mượt mà
+            loadAndPlayAudioTrack(nextIndex, true);
+            history.replaceState(null, '', `#audio/${currentAudioStory.id}/${nextIndex}`);
+            renderAudioPlaylist(currentAudioStory.audioFiles);
+        } else {
+            document.getElementById('audioCurrentTrackTitle').textContent = "Đã phát hết danh sách audio!";
+        }
+    });
+}
+
 function updateChapterSelect() {
     chapterSelect.innerHTML = '';
     const totalPages = Math.ceil(currentStory.chapters.length / CHAPTERS_PER_PAGE);
@@ -379,6 +570,14 @@ function setupEventListeners() {
             s.author.toLowerCase().includes(term)
         );
         renderStoryGrid(filtered);
+    });
+
+    searchAudioInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase().trim();
+        const filtered = audioStoriesData.filter(s => 
+            s.title.toLowerCase().includes(term)
+        );
+        renderAudioGrid(filtered);
     });
 
     const themeToggleBtn = document.getElementById('themeToggleBtn');

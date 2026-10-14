@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đọc Truyện Online - Chuyên Nghiệp & Mượt Mà</title>
+    <title>Đọc Truyện & Nghe Audio - Chuyên Nghiệp</title>
     <link rel="stylesheet" href="./assets/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,8 @@
             </a>
             
             <nav class="nav-links">
-                <a href="#home" class="nav-home-link active">Trang Chủ</a>
+                <a href="#home" class="nav-home-link active" id="navHome">Trang Chủ</a>
+                <a href="#audio-home" class="nav-home-link" id="navAudioHome">🎧 Kho Audio</a>
                 <button id="themeToggleBtn" class="btn-theme-toggle" title="Đổi giao diện Sáng/Tối">
                     <span class="icon-theme">🌙</span>
                 </button>
@@ -28,15 +29,15 @@
         </div>
     </header>
 
-    <!-- VIEW 1: TRANG CHỦ / DANH SÁCH TRUYỆN -->
+    <!-- VIEW 1: TRANG CHỦ TRUYỆN CHỮ -->
     <section id="viewHome" class="view-section">
         <div class="hero-banner">
             <div class="hero-content">
                 <h1>Thế Giới Truyện Chữ Đỉnh Cao</h1>
-                <p>Khám phá kho tàng truyện tiên hiệp, huyền huyễn, đô thị cập nhật liên tục.</p>
+                <p>Khám phá kho tàng truyện chữ cập nhật liên tục.</p>
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
-                    <input type="text" id="searchInput" placeholder="Tìm kiếm tên truyện, tác giả...">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm tên truyện chữ, tác giả...">
                 </div>
             </div>
         </div>
@@ -50,18 +51,39 @@
             </div>
 
             <div class="section-heading">
-                <h2>✨ Danh Sách Truyện</h2>
+                <h2>✨ Danh Sách Truyện Chữ</h2>
                 <span id="storyCountBadge" class="badge-count">0 truyện</span>
             </div>
             <div id="storyGrid" class="story-grid"></div>
         </div>
     </section>
 
-    <!-- VIEW 2: CHI TIẾT TRUYỆN -->
+    <!-- VIEW 1.2: TRANG CHỦ AUDIO -->
+    <section id="viewAudioHome" class="view-section hidden">
+        <div class="hero-banner" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%), var(--bg-secondary);">
+            <div class="hero-content">
+                <h1>Kho Tàng Sách Nói & Audio .MP3</h1>
+                <p>Thư giãn với các bộ truyện audio chất lượng cao.</p>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchAudioInput" placeholder="Tìm kiếm tên audio...">
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="section-heading">
+                <h2>🎧 Danh Sách Audio</h2>
+                <span id="audioCountBadge" class="badge-count">0 bộ</span>
+            </div>
+            <div id="audioGrid" class="story-grid"></div>
+        </div>
+    </section>
+
+    <!-- VIEW 2: CHI TIẾT TRUYỆN CHỮ -->
     <section id="viewDetail" class="view-section hidden">
         <div class="container">
             <button class="btn-back" onclick="window.location.hash='home'">← Quay lại danh sách</button>
-            
             <div id="storyDetailContent" class="story-detail-card"></div>
 
             <div class="chapter-list-wrapper">
@@ -74,7 +96,7 @@
         </div>
     </section>
 
-    <!-- VIEW 3: TRANG ĐỌC TRUYỆN (CHUYÊN NGHIỆP GIỐNG WEB THAM KHẢO) -->
+    <!-- VIEW 3: TRANG ĐỌC TRUYỆN CHỮ -->
     <section id="viewReader" class="view-section hidden">
         <div class="reader-toolbar">
             <div class="toolbar-left">
@@ -129,10 +151,34 @@
         </div>
     </section>
 
+    <!-- VIEW 4: TRANG NGHE AUDIO ĐỘC LẬP (.MP3) -->
+    <section id="viewAudio" class="view-section hidden">
+        <div class="container">
+            <button class="btn-back" onclick="window.location.hash='audio-home'">← Quay lại kho audio</button>
+            
+            <div class="audio-player-container">
+                <div class="audio-header-info">
+                    <h2 id="audioStoryTitle">Tên Audio</h2>
+                    <p id="audioCurrentTrackTitle">Đang chọn tập...</p>
+                </div>
+
+                <!-- HTML5 Audio Element -->
+                <div class="audio-player-box">
+                    <audio id="htmlAudioPlayer" controls preload="auto"></audio>
+                </div>
+
+                <div class="audio-playlist-card">
+                    <h3>Danh Sách Tập (.mp3)</h3>
+                    <ul id="audioPlaylist" class="audio-list"></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- FOOTER -->
     <footer class="site-footer">
         <div class="container">
-            <p>© <span id="year"></span> <strong>TruyenPro</strong>. Nền tảng đọc truyện chữ trực tuyến.</p>
+            <p>© <span id="year"></span> <strong>TruyenPro</strong>. Nền tảng đọc truyện chữ & nghe audio độc lập.</p>
         </div>
     </footer>
 
