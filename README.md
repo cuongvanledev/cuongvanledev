@@ -1,6 +1,6 @@
 # Cuong Van Le Dev
 
-Web đọc truyện tĩnh.
+Web đọc truyện và nghe audio tĩnh, tối ưu cho desktop và điện thoại.
 
 ## Cấu trúc
 
@@ -9,9 +9,12 @@ cuongvanledev/
 |-- README.md
 |-- assets/
 |   |-- app.js
-|   `-- style.css
+|   |-- style.css
+|   `-- cover-placeholder.svg
 `-- data/
-    `-- chapters.json
+    |-- stories.json
+    `-- <story-id>/
+        `-- chapter JSON files
 
 ## Chạy local
 
@@ -23,7 +26,18 @@ Sau đó mở:
 
 http://localhost:8000
 
-Mỗi page hiển thị tối đa 10 chương.
+## Tính năng
+
+- Tìm truyện theo tên hoặc tác giả, kết hợp lọc thể loại và sắp xếp danh sách.
+- Chọn đọc theo nhóm 10 chương hoặc đọc từng chương; mục lục và nút điều hướng theo chế độ đã chọn.
+- Nhảy tới chương theo số chương; chọn chương trong mục lục sẽ mở đúng chương.
+- Lưu tiến độ đọc, vị trí trong chương và cài đặt đọc trên trình duyệt hiện tại.
+- Tự tải tiếp chương mà không đưa người đọc về đầu trang.
+- Nút cài đặt đọc ở cuối màn hình mở bảng tùy chỉnh cỡ chữ, phông (Plus Jakarta Sans, Lora, Be Vietnam Pro), nền và điều hướng chương.
+- Lưu tập audio gần nhất và vị trí nghe.
+- Ở chế độ nhóm, mỗi lượt tải tối đa 10 chương; chế độ từng chương chỉ tải chương đang đọc.
+
+Tiến độ và cài đặt được lưu bằng `localStorage` trên thiết bị/trình duyệt, không đồng bộ giữa các thiết bị.
 
 ## GitHub Pages
 

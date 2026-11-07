@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" role="img" aria-label="Bìa truyện">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#312e81"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="book" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a5b4fc"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="600" fill="url(#background)"/>
+  <circle cx="320" cy="112" r="95" fill="#818cf8" opacity=".12"/>
+  <circle cx="55" cy="500" r="115" fill="#c4b5fd" opacity=".08"/>
+  <path d="M92 207c38-19 74-18 108 2v173c-34-20-70-21-108-2z" fill="url(#book)"/>
+  <path d="M308 207c-38-19-74-18-108 2v173c34-20 70-21 108-2z" fill="#818cf8"/>
+  <path d="M200 209v176" stroke="#e0e7ff" stroke-width="5" opacity=".8"/>
+  <path d="M115 244h60m-60 25h60m50-25h60m-60 25h60" stroke="#eef2ff" stroke-width="5" stroke-linecap="round" opacity=".75"/>
+  <text x="200" y="458" fill="#f8fafc" font-family="sans-serif" font-size="24" font-weight="700" text-anchor="middle">TRUYENPRO</text>
+  <text x="200" y="493" fill="#c7d2fe" font-family="sans-serif" font-size="17" text-anchor="middle">Bìa truyện</text>
+</svg>
