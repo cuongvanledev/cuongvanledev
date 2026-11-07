@@ -401,7 +401,7 @@ function restorePreferences() {
     const savedSettings = getReadingSettings();
     currentReaderFontSize = savedSettings.fontSize;
     currentFontFamilyMode = savedSettings.fontFamilyMode;
-    document.body.classList.remove('reader-theme-dark', 'reader-theme-sepia', 'reader-theme-light');
+    document.body.classList.remove('reader-theme-dark', 'reader-theme-gray', 'reader-theme-sepia', 'reader-theme-light');
     document.body.classList.add(`reader-theme-${savedSettings.readerTheme}`);
     document.querySelectorAll('.r-theme-btn').forEach(btn => {
         const active = btn.dataset.rtheme === savedSettings.readerTheme;
@@ -423,7 +423,7 @@ function getReadingSettings() {
         return {
             fontSize: Number.isInteger(value.fontSize) && value.fontSize >= 14 && value.fontSize <= 26 ? value.fontSize : defaults.fontSize,
             fontFamilyMode: Number.isInteger(value.fontFamilyMode) && value.fontFamilyMode >= 0 && value.fontFamilyMode < fontFamilies.length ? value.fontFamilyMode : defaults.fontFamilyMode,
-            readerTheme: ['dark', 'sepia', 'light'].includes(value.readerTheme) ? value.readerTheme : defaults.readerTheme
+            readerTheme: ['dark', 'gray', 'sepia', 'light'].includes(value.readerTheme) ? value.readerTheme : defaults.readerTheme
         };
     } catch (error) {
         console.error('Không thể đọc cài đặt đọc đã lưu:', error);
@@ -1065,7 +1065,7 @@ function setupEventListeners() {
                 b.classList.toggle('active', active);
                 b.setAttribute('aria-pressed', String(active));
             });
-            document.body.classList.remove('reader-theme-dark', 'reader-theme-sepia', 'reader-theme-light');
+            document.body.classList.remove('reader-theme-dark', 'reader-theme-gray', 'reader-theme-sepia', 'reader-theme-light');
             document.body.classList.add(`reader-theme-${theme}`);
             saveReadingSettings();
         };

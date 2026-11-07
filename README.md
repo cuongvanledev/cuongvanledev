@@ -33,7 +33,7 @@ http://localhost:8000
 - Nhảy tới chương theo số chương; chọn chương trong mục lục sẽ mở đúng chương.
 - Lưu tiến độ đọc, vị trí trong chương và cài đặt đọc trên trình duyệt hiện tại.
 - Tự tải tiếp chương mà không đưa người đọc về đầu trang.
-- Nút cài đặt đọc ở cuối màn hình mở bảng tùy chỉnh cỡ chữ, phông (Plus Jakarta Sans, Lora, Be Vietnam Pro), nền và điều hướng chương.
+- Nút cài đặt đọc ở cuối màn hình mở bảng tùy chỉnh cỡ chữ, phông (Plus Jakarta Sans, Lora, Be Vietnam Pro), nền (xám đen, xám vàng, sepia, sáng) và điều hướng chương.
 - Lưu tập audio gần nhất và vị trí nghe.
 - Ở chế độ nhóm, mỗi lượt tải tối đa 10 chương; chế độ từng chương chỉ tải chương đang đọc.
 
