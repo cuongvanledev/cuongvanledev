@@ -38,12 +38,12 @@ body.reader-theme-dark {
     --reader-muted: #a3a6ae;
 }
 body.reader-theme-gray {
-    --reader-bg: #353638;
-    --reader-text: #d5d3cc;
-    --reader-title: #f0eee7;
-    --reader-surface: #3e3f40;
-    --reader-border: #51514e;
-    --reader-muted: #b8b5aa;
+    --reader-bg: #303030;
+    --reader-text: #f0ecdf;
+    --reader-title: #f6f2e7;
+    --reader-surface: #383838;
+    --reader-border: #4a4944;
+    --reader-muted: #aaa69b;
 }
 body.reader-theme-sepia {
     --reader-bg: #f4ecd8;
@@ -335,7 +335,7 @@ body.reading-mode > .site-footer { display: none; }
 .reader-font-option[data-font-mode="2"] .font-option-sample { font-family: 'Be Vietnam Pro', sans-serif; }
 .theme-swatch { width: 25px; height: 25px; border: 1px solid rgba(127, 127, 127, 0.45); border-radius: 50%; }
 .theme-swatch-dark { background: #1b1c1f; }
-.theme-swatch-gray { background: #353638; }
+.theme-swatch-gray { background: #303030; }
 .theme-swatch-sepia { background: #f4ecd8; }
 .theme-swatch-light { background: #fff; }
 #viewReader .pagination-bar { display: none; }
