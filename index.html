@@ -124,62 +124,62 @@
                 <span id="readerTopTitle" class="reader-top-title">Đang tải chương...</span>
             </div>
         </div>
-        <div id="readerMiniToolbar" class="reader-controls">
-            <button id="readerControlsToggle" class="reader-controls-toggle" type="button" aria-expanded="false" aria-controls="readerControlsPanel">
-                <span aria-hidden="true">Aa</span>
-                <span>Cài đặt đọc</span>
+        <div class="reader-bottom-controls">
+            <button id="miniPrevChapter" class="reader-quick-nav" type="button" aria-label="Chương trước" title="Chương trước">
+                <span aria-hidden="true">‹</span><span>Trước</span>
             </button>
-            <section id="readerControlsPanel" class="reader-controls-panel" aria-label="Cài đặt đọc" hidden>
-                <div class="reader-controls-header">
-                    <div>
-                        <h2>Cài đặt đọc</h2>
-                        <p>Tùy chỉnh cách hiển thị chương truyện</p>
+            <div id="readerMiniToolbar" class="reader-controls">
+                <button id="readerControlsToggle" class="reader-controls-toggle" type="button" aria-expanded="false" aria-controls="readerControlsPanel">
+                    <span aria-hidden="true">Aa</span>
+                    <span>Cài đặt đọc</span>
+                </button>
+                <section id="readerControlsPanel" class="reader-controls-panel" aria-label="Cài đặt đọc" hidden>
+                    <div class="reader-controls-header">
+                        <div>
+                            <h2>Cài đặt đọc</h2>
+                            <p>Tùy chỉnh cách hiển thị chương truyện</p>
+                        </div>
+                        <button id="readerControlsClose" class="reader-controls-close" type="button" aria-label="Đóng cài đặt">×</button>
                     </div>
-                    <button id="readerControlsClose" class="reader-controls-close" type="button" aria-label="Đóng cài đặt">×</button>
-                </div>
-                <div class="reader-control-section">
-                    <h3>Điều hướng chương</h3>
-                    <div class="reader-chapter-nav">
-                        <button id="miniPrevChapter" class="reader-option-button" type="button">← Chương trước</button>
-                        <span id="readerControlsPosition" class="reader-controls-position" aria-live="polite"></span>
-                        <button id="miniNextChapter" class="reader-option-button" type="button">Chương sau →</button>
+                    <div class="reader-control-section">
+                        <h3>Cỡ chữ</h3>
+                        <div class="reader-font-size-controls">
+                            <button id="btnFontDec" class="reader-option-button font-size-button" type="button" aria-label="Giảm cỡ chữ">A− <span>Nhỏ hơn</span></button>
+                            <output id="fontSizeDisplay" class="font-size-val" aria-live="polite">19px</output>
+                            <button id="btnFontInc" class="reader-option-button font-size-button" type="button" aria-label="Tăng cỡ chữ">A+ <span>Lớn hơn</span></button>
+                        </div>
                     </div>
-                </div>
-                <div class="reader-control-section">
-                    <h3>Cỡ chữ</h3>
-                    <div class="reader-font-size-controls">
-                        <button id="btnFontDec" class="reader-option-button font-size-button" type="button" aria-label="Giảm cỡ chữ">A− <span>Nhỏ hơn</span></button>
-                        <output id="fontSizeDisplay" class="font-size-val" aria-live="polite">19px</output>
-                        <button id="btnFontInc" class="reader-option-button font-size-button" type="button" aria-label="Tăng cỡ chữ">A+ <span>Lớn hơn</span></button>
+                    <div class="reader-control-section">
+                        <h3>Phông chữ</h3>
+                        <div class="reader-font-options" role="group" aria-label="Chọn phông chữ">
+                            <button class="reader-font-option" type="button" data-font-mode="0" aria-pressed="false">
+                                <span class="font-option-sample">Aa</span>
+                                <span>Plus Jakarta Sans</span>
+                            </button>
+                            <button class="reader-font-option" type="button" data-font-mode="1" aria-pressed="false">
+                                <span class="font-option-sample">Aa</span>
+                                <span>Lora</span>
+                            </button>
+                            <button class="reader-font-option" type="button" data-font-mode="2" aria-pressed="false">
+                                <span class="font-option-sample">Aa</span>
+                                <span>Be Vietnam Pro</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="reader-control-section">
-                    <h3>Phông chữ</h3>
-                    <div class="reader-font-options" role="group" aria-label="Chọn phông chữ">
-                        <button class="reader-font-option" type="button" data-font-mode="0" aria-pressed="false">
-                            <span class="font-option-sample">Aa</span>
-                            <span>Plus Jakarta Sans</span>
-                        </button>
-                        <button class="reader-font-option" type="button" data-font-mode="1" aria-pressed="false">
-                            <span class="font-option-sample">Aa</span>
-                            <span>Lora</span>
-                        </button>
-                        <button class="reader-font-option" type="button" data-font-mode="2" aria-pressed="false">
-                            <span class="font-option-sample">Aa</span>
-                            <span>Be Vietnam Pro</span>
-                        </button>
+                    <div class="reader-control-section">
+                        <h3>Màu nền</h3>
+                        <div class="reader-theme-options" role="group" aria-label="Chọn màu nền đọc">
+                            <button class="r-theme-btn" type="button" data-rtheme="dark" aria-pressed="false"><span class="theme-swatch theme-swatch-dark"></span><span>Xám đen</span></button>
+                            <button class="r-theme-btn" type="button" data-rtheme="gray" aria-pressed="false"><span class="theme-swatch theme-swatch-gray"></span><span>Xám vàng</span></button>
+                            <button class="r-theme-btn" type="button" data-rtheme="sepia" aria-pressed="false"><span class="theme-swatch theme-swatch-sepia"></span><span>Sepia</span></button>
+                            <button class="r-theme-btn" type="button" data-rtheme="light" aria-pressed="false"><span class="theme-swatch theme-swatch-light"></span><span>Sáng</span></button>
+                        </div>
                     </div>
-                </div>
-                <div class="reader-control-section">
-                    <h3>Màu nền</h3>
-                    <div class="reader-theme-options" role="group" aria-label="Chọn màu nền đọc">
-                        <button class="r-theme-btn" type="button" data-rtheme="dark" aria-pressed="false"><span class="theme-swatch theme-swatch-dark"></span><span>Xám đen</span></button>
-                        <button class="r-theme-btn" type="button" data-rtheme="gray" aria-pressed="false"><span class="theme-swatch theme-swatch-gray"></span><span>Xám vàng</span></button>
-                        <button class="r-theme-btn" type="button" data-rtheme="sepia" aria-pressed="false"><span class="theme-swatch theme-swatch-sepia"></span><span>Sepia</span></button>
-                        <button class="r-theme-btn" type="button" data-rtheme="light" aria-pressed="false"><span class="theme-swatch theme-swatch-light"></span><span>Sáng</span></button>
-                    </div>
-                </div>
-            </section>
+                </section>
+            </div>
+            <button id="miniNextChapter" class="reader-quick-nav" type="button" aria-label="Chương sau" title="Chương sau">
+                <span>Sau</span><span aria-hidden="true">›</span>
+            </button>
         </div>
 
         <div class="reader-container">

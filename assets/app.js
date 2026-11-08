@@ -610,6 +610,7 @@ async function showReader(storyId, pageNum = 1, targetChapFile = null, resumePro
     currentStory = storiesData.find(s => s.id === storyId);
     if (!currentStory || !currentStory.chapters) return;
     currentReaderMode = readerMode;
+    setReaderBottomControlsVisible(true);
     const targetIndex = targetChapFile ? currentStory.chapters.indexOf(targetChapFile) : -1;
     currentChapterIndex = targetIndex >= 0 ? targetIndex : (pageNum - 1) * CHAPTERS_PER_PAGE;
     window.scrollTo(0, 0);
@@ -626,6 +627,7 @@ async function showReader(storyId, pageNum = 1, targetChapFile = null, resumePro
 
     await fetchPageContent(storyId, pageNum, targetChapFile, false, resumeProgress, currentReaderMode === 'single');
     autoNextBlockedUntil = Date.now() + 1000;
+    setReaderBottomControlsVisible(true);
     updateChapterSelect();
     updatePaginationButtons();
     updateReaderChapterTitle();
@@ -640,6 +642,7 @@ function setupReaderToolbar() {
     document.getElementById('readerControlsClose').addEventListener('click', () => setReaderControlsOpen(false));
     document.getElementById('miniPrevChapter').addEventListener('click', () => navigateReader(-1));
     document.getElementById('miniNextChapter').addEventListener('click', () => navigateReader(1));
+    document.querySelector('.reader-container').addEventListener('pointerdown', () => setReaderBottomControlsVisible(true));
     document.addEventListener('click', event => {
         if (!panel.hidden && !controls.contains(event.target)) setReaderControlsOpen(false);
     });
@@ -651,11 +654,19 @@ function setupReaderToolbar() {
     });
 }
 
+function setReaderBottomControlsVisible(isVisible) {
+    const controls = document.querySelector('.reader-bottom-controls');
+    controls.classList.toggle('reader-bottom-controls-hidden', !isVisible);
+    controls.setAttribute('aria-hidden', String(!isVisible));
+    controls.inert = !isVisible;
+}
+
 function setReaderControlsOpen(isOpen) {
     const panel = document.getElementById('readerControlsPanel');
     const toggle = document.getElementById('readerControlsToggle');
     panel.hidden = !isOpen;
     toggle.setAttribute('aria-expanded', String(isOpen));
+    if (isOpen) setReaderBottomControlsVisible(true);
 }
 
 function updateReaderFontChoice() {
@@ -805,8 +816,17 @@ async function fetchPageContent(storyId, pageNum, targetChapFile = null, append 
 }
 
 function setupAutoNextChapter() {
+    let previousScrollY = window.scrollY;
     window.addEventListener('scroll', () => {
-        if (viewReader.classList.contains('hidden') || !autoNextEnabled || isFetchingNextPage) return;
+        const currentScrollY = window.scrollY;
+        const scrollDelta = currentScrollY - previousScrollY;
+        previousScrollY = currentScrollY;
+        if (viewReader.classList.contains('hidden')) return;
+
+        if (scrollDelta > 2 && currentScrollY > 120) setReaderBottomControlsVisible(false);
+        else if (scrollDelta < -2 || currentScrollY <= 120) setReaderBottomControlsVisible(true);
+
+        if (!autoNextEnabled || isFetchingNextPage) return;
         scheduleProgressSave();
         updateReaderChapterTitle();
         if (currentReaderMode === 'single') return;
@@ -1013,10 +1033,6 @@ function updatePaginationButtons() {
         : `Phần ${currentPageIndex} / ${totalPages}`;
     document.getElementById('miniPrevChapter').disabled = isFirst;
     document.getElementById('miniNextChapter').disabled = isLast;
-    document.getElementById('readerControlsPosition').textContent = isSingle
-        ? `Chương ${getFirstChapNum(currentStory) + currentChapterIndex} / ${getFirstChapNum(currentStory) + currentStory.chapters.length - 1}`
-        : `Phần ${currentPageIndex} / ${totalPages}`;
-
     prevButton.onclick = prevButtonBottom.onclick = () => navigateReader(-1);
     nextButton.onclick = nextButtonBottom.onclick = () => navigateReader(1);
 }
